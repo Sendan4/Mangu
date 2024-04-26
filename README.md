@@ -5,9 +5,14 @@ Es un programa auxiliar al motor que permite la facil instalacion, compilacion y
 ### Dev
 Probar la cli 
 ```bash
-cargo run 
-./target/debug/mangu --help
+cargo run -- -h
 ```
+
+
+### Templates
+En el directirio `templates` se encuentran las plantillas que se pueden usar para crear un proyecto nuevo.
+Cada carpeta es una plantilla y contiene los archivos necesarios para comenzar a desarrollar.
+Por ahora solo esta la plantilla "blank" que es un proyecto vacio con un archivo de configuracion de patata-engine.
 
 
 ## Espejos
