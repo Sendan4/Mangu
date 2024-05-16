@@ -1,17 +1,18 @@
+use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::{env, fs};
-use std::process::Command;
+use std::{env, fs, io};
+use std::process::{Command, Stdio};
 use clap::{Parser, Subcommand, Args};
 
 /**
  * Comandos
- * mangu new <project_name> --path <path | default="./"> --template <template | default = "blank"> 
+ * mangu new <project_name> --path <path | default="./"> --template <template | default = "blank">
  */
 
 #[derive(Parser)]
 #[command(
-    version="1.0", 
-    about="Patata Engine CLI", 
+    version="1.0",
+    about="Patata Engine CLI",
     long_about = "Create and manage Patata Engine projects"
 )]
 struct Cli {
@@ -27,7 +28,7 @@ enum Cmds { // Enumeración de comandos: mangu <cmd>
 
 #[derive(Args)]
 struct NewCommand { // mangu new project_name -path <path | default = "./" --template <template_name | default =
-             // "blank" 
+             // "blank"
     #[arg(short, long, default_value = "./")]
     path: PathBuf,
 
@@ -44,8 +45,8 @@ fn main() {
     match cli.cmd {
 
         // mangu new
-        Cmds::New(new) => {
-            new_project(&new.project_name, &new.path, &new.template);
+        Cmds::New(mut new) => {
+            new_project(&new.project_name, &mut new.path, &new.template);
 
             // Aqui se pueden crear cualquier archivo necesario para un projecto
         }
@@ -53,27 +54,44 @@ fn main() {
 }
 
 // Crea un nuevo projecto de patata en el directorio espeficicado usando la plantilla adecuada
-fn new_project(project_name: &String, path: &PathBuf, template: &String) {
+fn new_project(project_name: &String, path: &mut PathBuf, template: &String) {
 
     // Intenta crear y moverse al directorio del projecto, si falla -> error
+    path.push(project_name);
     if let Err(err) = move_to_path_create_dir(&path) {
         eprintln!("Failed to move to directory: {}", err);
         return;
     }
 
+    println!("Creating the game proyect folder.");
+    let _game_folder = Command::new("mkdir")
+        .arg("game")
+        .stdin(Stdio::null())
+        .stdin(Stdio::null())
+        .output()
+        .expect("Failed to create a proyect folder.");
+
     // Trae patata
-    let output = Command::new("git")
-        .arg("pull")
+    println!("Downloading the Patata Engine code :");
+
+    let download_patata = Command::new("git")
+        .arg("clone")
+        .arg("--recurse-submodules")
         .arg("https://gitlab.com/patata-engine/patata-engine.git")
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
         .output()
         .expect("Failed to retrieve Patata Engine from gitlab.");
 
     // Si falla al intentar traer patata
-    if !output.status.success() {
-        eprintln!("Error: {:?}", output);
+    if !download_patata.status.success() {
+        eprintln!("Error: {:?}", download_patata);
         return;
     }
-    
+    else {
+        io::stdout().write_all(&download_patata.stdout).unwrap();
+    }
+
     // Trae la plantilla -- TODO: Esto no funciona :(  UnU
     //
     // let output = Command::new("git")
@@ -87,15 +105,18 @@ fn new_project(project_name: &String, path: &PathBuf, template: &String) {
     // }
 
     // Log
-    println!("Projecto: {project_name}/{template} creado con exito en {}.", path.display().to_string());
+    println!("Projecto: {project_name}, con la plantilla {template} creado con exito en {}.", path.display().to_string());
 }
 
 // Crea y se mueve a un directorio
 fn move_to_path_create_dir(path: &Path) -> Result<(), std::io::Error> {
     // Create directory if it doesn't exist
+
     if !path.exists() {
         fs::create_dir_all(path)?;
     }
+
+    println!("Current Path : {:?}", path);
 
     // Move to the specified directory
     env::set_current_dir(path)?;
