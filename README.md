@@ -1,5 +1,4 @@
 <h1 align = center >Mangu</h1>
-<span align = center>![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)</span>
 
 Mangu es un programa auxiliar al motor [patata](https://gitlab.com/patata-engine/patata-engine.git) que permite la facil instalacion, compilacion y creacion de plantillas para comenzar a desarrollar de forma sencilla.
 
