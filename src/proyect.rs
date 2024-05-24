@@ -84,16 +84,16 @@ fn generar_cmake_file(project_name : &String) {
     println!("Escribiendo en CMakeLists.txt");
 
     _cmake_file.as_ref()
-        .expect("REASON")
+        .expect("No se pudo escribir en CMakeLists.txt")
         .write_all(b"cmake_minimum_required(VERSION 3.18)
 project(\"").unwrap();
 
     _cmake_file.as_ref()
-        .expect("REASON")
+        .expect("No se pudo escribir en CMakeLists.txt")
         .write_all(project_name.as_bytes()).unwrap();
 
     _cmake_file.as_ref()
-        .expect("REASON")
+        .expect("No se pudo escribir en CMakeLists.txt")
         .write_all(b"\" LANGUAGES CXX)
 
 add_subdirectory(patata-engine)
@@ -115,7 +115,7 @@ fn generar_source_file() {
     let mut _cmake_file = File::create("src/Main.cpp");
 
     _cmake_file.as_ref()
-        .expect("REASON")
+        .expect("No se pudo escribir en Main.cpp")
         .write_all(b"#define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <PatataEngine/PatataEngine.hpp>
