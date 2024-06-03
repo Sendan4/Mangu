@@ -8,6 +8,11 @@ Probar la cli
 cargo run -- -h
 ```
 
+### Dependencias
+- Git (CLI)
+
+Mangu hace uso de comandos que involucran a git, este debe estar instalado y ser accesible mediante la variable de entorno PATH.
+
 ## Espejos
 [Github](https://github.com/Sendan4/Mangu.git)
 
