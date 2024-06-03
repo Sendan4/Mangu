@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand, Args};
 
 mod proyect;
+use crate::proyect::new_project;
 
 /**
  * Comandos
@@ -44,9 +45,7 @@ fn main() {
 
         // mangu new
         Cmds::New(mut new) => {
-            proyect::new_project(&new.project_name, &mut new.path, &new.template);
-
-            // Aqui se pueden crear cualquier archivo necesario para un projecto
+            new_project(&new.project_name, &mut new.path, &new.template);
         }
     }
 }
